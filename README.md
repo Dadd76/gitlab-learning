@@ -12,4 +12,6 @@ gitlab:
     GITLAB_OMNIBUS_CONFIG: |
       external_url 'http://gitlab.local'
 
+https://www.youtube.com/playlist?list=PLn6POgpklwWrRoZZXv0xf71mvT4E0QDOF
+
 
