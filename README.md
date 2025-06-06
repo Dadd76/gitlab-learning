@@ -236,6 +236,13 @@ Ce dossier contiendra la configuration persistante du runner (config.toml, etc.)
 `-v /var/run/docker.sock:/var/run/docker.sock`
 C’est ce qui permet au runner de lancer d'autres conteneurs Docker, en parlant directement avec le Docker Engine de Docker Desktop.
 
+### register gitlab-runner
+
+https://docs.gitlab.com/runner/register/?tab=Docker
+This GitLab instance does not provide any instance runners yet. Administrators can register instance runners in the admin area.
+
+
+
 Intègre un workflow CI/CD dans .gitlab-ci.yml pour valider chaque MR
 
 
