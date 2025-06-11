@@ -236,7 +236,7 @@ Ce dossier contiendra la configuration persistante du runner (config.toml, etc.)
 `-v /var/run/docker.sock:/var/run/docker.sock`
 C’est ce qui permet au runner de lancer d'autres conteneurs Docker, en parlant directement avec le Docker Engine de Docker Desktop.
 
-## register gitlab-runner
+## Register gitlab-runner
 
 ### créer un Personal Access Token sur GitLab (édition Free/CE incluse) :
 
@@ -257,7 +257,7 @@ Clique sur "Create personal access token".
 Copie le token immédiatement et garde-le bien en sécurité.
 Tu ne pourras plus le voir ensuite.
 
-### enrgistrement du runner
+### Enrgistrement du runner
 
 ```
 docker exec -it gitlab-runner gitlab-runner register \
