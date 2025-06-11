@@ -257,7 +257,14 @@ C’est ce qui permet au runner de lancer d'autres conteneurs Docker, en parlant
 
 ## Register gitlab-runner
 
+GitLab CE v18
+  1. Récupère le token d’enregistrement : dans l’interface de ton GitLab CE (ex. http://gitlab.local)
 
+Accède à ton projet dans Settings > CI/CD > Runners
+Puis clique sur "Expand" la section "Set up a specific Runner manually"
+Copie le registration token
+
+Le token d’enregistrement est différent du Personal Access Token (glpat...), et est fait uniquement pour enregistrer des runners.
 
 ### Enregistrement du runner
 
