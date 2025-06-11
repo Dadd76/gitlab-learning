@@ -153,6 +153,25 @@ Mets à jour les URLs de remote dans ton environnement local si besoin :
 
 ## Utilisation gitLab
 
+### Créer un Personal Access Token sur GitLab (édition Free/CE incluse) :
+
+Dans Gitlab Clique sur ta photo de profil en haut à droite → "Edit profile" ou "Préférences".
+
+Va dans le menu de gauche : "Access Tokens" ou "Tokens d'accès personnels".
+
+Remplis le formulaire :
+
+Nom : Runner Registration (ou autre)
+Expiration date : optionnel (tu peux le laisser vide ou définir une date)
+Scopes (Permissions) :
+  api (obligatoire)
+
+(ne coche pas d'autres scopes inutiles si c’est juste pour le runner)
+
+Clique sur "Create personal access token".
+Copie le token immédiatement et garde-le bien en sécurité.
+Tu ne pourras plus le voir ensuite.
+
 ### Étapes pour forcer l’utilisation des Merge Requests
 
 1. 🔐 Protéger les branches critiques
@@ -238,24 +257,7 @@ C’est ce qui permet au runner de lancer d'autres conteneurs Docker, en parlant
 
 ## Register gitlab-runner
 
-### Créer un Personal Access Token sur GitLab (édition Free/CE incluse) :
 
-Dans Gitlab Clique sur ta photo de profil en haut à droite → "Edit profile" ou "Préférences".
-
-Va dans le menu de gauche : "Access Tokens" ou "Tokens d'accès personnels".
-
-Remplis le formulaire :
-
-Nom : Runner Registration (ou autre)
-Expiration date : optionnel (tu peux le laisser vide ou définir une date)
-Scopes (Permissions) :
-  api (obligatoire)
-
-(ne coche pas d'autres scopes inutiles si c’est juste pour le runner)
-
-Clique sur "Create personal access token".
-Copie le token immédiatement et garde-le bien en sécurité.
-Tu ne pourras plus le voir ensuite.
 
 ### Enregistrement du runner
 
