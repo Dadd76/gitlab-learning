@@ -238,7 +238,7 @@ C’est ce qui permet au runner de lancer d'autres conteneurs Docker, en parlant
 
 ## register gitlab-runner
 
-# créer un Personal Access Token sur GitLab (édition Free/CE incluse) :
+### créer un Personal Access Token sur GitLab (édition Free/CE incluse) :
 
 Dans Gitlab Clique sur ta photo de profil en haut à droite → "Edit profile" ou "Préférences".
 
@@ -257,7 +257,7 @@ Clique sur "Create personal access token".
 Copie le token immédiatement et garde-le bien en sécurité.
 Tu ne pourras plus le voir ensuite.
 
-# enrgistrement du runner
+### enrgistrement du runner
 
 ```
 docker exec -it gitlab-runner gitlab-runner register \
