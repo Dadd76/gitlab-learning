@@ -304,15 +304,27 @@ Il doit être marqué comme “active” et “online”.
 Vérifie aussi qu’il est bien assigné à ton projet (pas juste "shared").
 
 ✅ 2. Le runner a-t-il les bons tags ?
-Dans ton .gitlab-ci.yml, tu n’as mis aucun tags: dans les jobs, ce qui est OK si ton runner est sans tags.
 
-dans le runner
+dans le runner affiche la description du runner pas les tags
 ```
 # gitlab-runner list
 Runtime platform                                    arch=amd64 os=linux pid=108 revision=4d7093e1 version=18.0.2
 Listing configured runners                          ConfigFile=/etc/gitlab-runner/config.toml
 build dotNet                                        Executor=docker Token=glrtr-bESNLz_xhyigEEAibghwTW86MQpwOjIKdDozCw.01.121ujupl7 URL=http://host.docker.internal
 ```
+Dans ton .gitlab-ci.yml, tu n’as mis aucun tags: dans les jobs, ce qui est OK si ton runner est sans tags.
+
+Tu peux les vérifier dans l’interface GitLab :
+
+Va dans ton projet GitLab.
+
+Clique sur "Settings" (Paramètres) > CI/CD.
+
+Dans la section Runners, clique sur "Expand" (ou "Déplier").
+
+Tu verras les tags associés à chaque runner.
+
+ou dans `sudo nano /srv/gitlab-runner/config/config.toml`
 
 Mais si tu as ajouté des tags comme "dotnet" ou "docker" lors de l'enregistrement, tu dois les ajouter à tes jobs, par exemple :
 
