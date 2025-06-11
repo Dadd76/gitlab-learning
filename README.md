@@ -278,6 +278,20 @@ docker exec -it gitlab-runner gitlab-runner register \
   --tag-list "docker,local"
 ```
 
+choix de l’exécuteur pour ton runner : docker
+
+```
+Registering runner... succeeded                     runner=GR1348941iVxSxgo4
+Enter an executor: docker+machine, docker-autoscaler, instance, custom, shell, ssh, virtualbox, docker-windows, parallels, docker, kubernetes:
+```
+
+image par défaut : mcr.microsoft.com/dotnet/sdk:7.0
+
+```
+Enter the default Docker image (for example, ruby:2.7):
+mcr.microsoft.com/dotnet/sdk:7.0
+```
+
 https://docs.gitlab.com/runner/register/?tab=Docker
 This GitLab instance does not provide any instance runners yet. Administrators can register instance runners in the admin area.
 
