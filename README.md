@@ -208,25 +208,25 @@ Active les règles de CODEOWNERS pour désigner automatiquement les relecteurs
 
 à la racine du projet : .gitlab-ci.yml
 
-### crétion gitlab-runner
+## création gitlab-runner
 
-`docker run -d --name gitlab-runner --restart always -v /srv/gitlab-runner/config:/etc/gitlab-runner -v /var/run/docker.sock:/var/run/docker.sock gitlab/gitlab-runner:latest token : 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`
+`docker run -d --name gitlab-runner --restart always -v /srv/gitlab-runner/config:/etc/gitlab-runner -v /var/run/docker.sock:/var/run/docker.sock gitlab/gitlab-runner:latest`
 
-🧱 1. L’image gitlab/gitlab-runner:latest est téléchargée
+correspond à l’identifiant unique (container ID) du conteneur Docker que tu viens de lancer avec la commande docker run. 
+`0e83db854e2f1fba94137d4f1d2e5e2eac97d26a778d1ea541f607029dc0f2d0`
+
+  1. L’image gitlab/gitlab-runner:latest est téléchargée
 Elle est stockée localement dans Docker Desktop.
 
-Tu peux la voir avec :
+Tu peux la voir avec : `docker images`  
 
-docker images
-📦 2. Le conteneur gitlab-runner est créé
+  2. Le conteneur gitlab-runner est créé
 Le conteneur tourne dans l’environnement Docker Desktop (dans la VM Docker interne).
 
-Tu peux le voir avec :
-
-`docker ps`
+Tu peux le voir avec : `docker ps`
 ou via l’interface graphique de Docker Desktop.
 
-📂 3. Volumes montés :
+  3. Volumes montés :
 
 `-v /srv/gitlab-runner/config:/etc/gitlab-runner`
 Cela crée (ou utilise) un dossier sur ta machine hôte (Docker Desktop) à l’emplacement /srv/gitlab-runner/config (ou équivalent sur Windows).
@@ -236,7 +236,17 @@ Ce dossier contiendra la configuration persistante du runner (config.toml, etc.)
 `-v /var/run/docker.sock:/var/run/docker.sock`
 C’est ce qui permet au runner de lancer d'autres conteneurs Docker, en parlant directement avec le Docker Engine de Docker Desktop.
 
-### register gitlab-runner
+## register gitlab-runner
+
+```
+docker exec -it gitlab-runner gitlab-runner register \
+  --url "http://host.docker.internal" \
+  --token "glpat-xxxxx" \
+  --name "runner-local" \
+  --executor "docker" \
+  --docker-image "mcr.microsoft.com/dotnet/sdk:7.0" \
+  --tag-list "docker,local"
+```
 
 https://docs.gitlab.com/runner/register/?tab=Docker
 This GitLab instance does not provide any instance runners yet. Administrators can register instance runners in the admin area.
