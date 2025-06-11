@@ -204,11 +204,11 @@ Utilise un template de MR (.gitlab/merge_request_templates) pour structurer les 
 
 Active les règles de CODEOWNERS pour désigner automatiquement les relecteurs
 
-### Créer un pipeline GitLab CI/CD pour une application C# console
+# Créer un pipeline GitLab CI/CD pour une application C# console
 
 à la racine du projet : .gitlab-ci.yml
 
-## création gitlab-runner
+## Création gitlab-runner
 
 `docker run -d --name gitlab-runner --restart always -v /srv/gitlab-runner/config:/etc/gitlab-runner -v /var/run/docker.sock:/var/run/docker.sock gitlab/gitlab-runner:latest`
 
