@@ -292,6 +292,43 @@ Enter the default Docker image (for example, ruby:2.7):
 mcr.microsoft.com/dotnet/sdk:7.0
 ```
 
+### Vérification du runner
+
+ 1. Ton runner est-il bien enregistré et actif ?
+Va dans ton projet GitLab :
+Menu > CI/CD > Runners
+
+Tu dois voir ton runner dans la liste.
+Il doit être marqué comme “active” et “online”.
+
+Vérifie aussi qu’il est bien assigné à ton projet (pas juste "shared").
+
+✅ 2. Le runner a-t-il les bons tags ?
+Dans ton .gitlab-ci.yml, tu n’as mis aucun tags: dans les jobs, ce qui est OK si ton runner est sans tags.
+
+dans le runner
+```
+# gitlab-runner list
+Runtime platform                                    arch=amd64 os=linux pid=108 revision=4d7093e1 version=18.0.2
+Listing configured runners                          ConfigFile=/etc/gitlab-runner/config.toml
+build dotNet                                        Executor=docker Token=glrtr-bESNLz_xhyigEEAibghwTW86MQpwOjIKdDozCw.01.121ujupl7 URL=http://host.docker.internal
+```
+
+Mais si tu as ajouté des tags comme "dotnet" ou "docker" lors de l'enregistrement, tu dois les ajouter à tes jobs, par exemple :
+
+```
+build-job:
+  stage: build
+  tags:
+    - docker
+    - dotnet
+  script:
+    - dotnet build --configuration Release --no-restore
+Sinon GitLab ne trouve aucun runner correspondant.
+```
+
+
+
 https://docs.gitlab.com/runner/register/?tab=Docker
 This GitLab instance does not provide any instance runners yet. Administrators can register instance runners in the admin area.
 
