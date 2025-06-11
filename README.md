@@ -1,4 +1,4 @@
-# gitlab-learning
+# Gitlab-learning
 
 Exercices pratiques et notes personnelles pour apprendre à utiliser GitLab avec Docker sur Windows.
 
@@ -79,7 +79,7 @@ docker-compose up -d
 Si ça ne fonctionne pas : vide le cache DNS avec ipconfig /flushdns dans PowerShell.
 Assure-toi que ton pare-feu ne bloque pas les ports utilisés (80, 443).
 
-## Migration  GitHub vers GitLab
+# Migration  GitHub vers GitLab
 
 migrer ton code de GitHub vers GitLab, tout en gardant ton historique Git (commits, branches, tags, etc.).
 
