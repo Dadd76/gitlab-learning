@@ -320,7 +320,7 @@ Mais si tu as ajouté des tags comme "dotnet" ou "docker" lors de l'enregistreme
 build-job:
   stage: build
   tags:
-    - docker
+    - build
     - dotnet
   script:
     - dotnet build --configuration Release --no-restore
