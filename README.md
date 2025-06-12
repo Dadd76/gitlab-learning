@@ -305,6 +305,8 @@ Vérifie aussi qu’il est bien assigné à ton projet (pas juste "shared").
 
 mes tags : C#,build,sdk:7.0,test,publish,deploy
 
+/etc/gitlab-runner/config.toml
+
 ✅ 2. Le runner a-t-il les bons tags ?
 
 dans le runner affiche la description du runner pas les tags
