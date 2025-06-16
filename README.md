@@ -255,6 +255,32 @@ Ce dossier contiendra la configuration persistante du runner (config.toml, etc.)
 `-v /var/run/docker.sock:/var/run/docker.sock`
 C’est ce qui permet au runner de lancer d'autres conteneurs Docker, en parlant directement avec le Docker Engine de Docker Desktop.
 
+## Création gitlab-runner avec docker-compose.yml Compose et volume persistant : 
+
+```
+version: "3.8"
+
+services:
+  gitlab-runner:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner
+    restart: always
+    volumes:
+      - gitlab-runner-config:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  gitlab-runner-config:
+
+```
+
+lancement du conteneur : `docker-compose up -d`
+enregistrement du runner : `docker exec -it gitlab-runner gitlab-runner register`
+
+Le fichier config.toml sera automatiquement sauvegardé dans le volume persistant, accessible via :
+Windows : \\wsl.localhost\docker-desktop-data\version-pack-data\community\docker\volumes\gitlab-runner-config\_data\config.toml
+WSL/Linux : /var/lib/docker/volumes/gitlab-runner-config/_data/config.toml
+
 ## Register gitlab-runner
 
 GitLab CE v18
