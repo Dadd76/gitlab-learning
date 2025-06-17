@@ -21,7 +21,7 @@ shutdown_timeout = 0
   [runners.docker]
     tls_verify = false
     image = "mcr.microsoft.com/dotnet/sdk:7.0"
-    privileged = false
+    privileged = true  # pour la build de l image docker
     disable_entrypoint_overwrite = false
     oom_kill_disable = false
     disable_cache = false
