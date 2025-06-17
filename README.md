@@ -368,13 +368,47 @@ build-job:
     - dotnet build --configuration Release --no-restore
 Sinon GitLab ne trouve aucun runner correspondant.
 ```
+### Builder image docker avec le runner
+
+1. Dans le fichier config.toml du runner
+Sur ta machine (ou dans ton conteneur GitLab Runner), édite /etc/gitlab-runner/config.toml :  privileged = true
+
+```
+[[runners]]
+  name = "docker-runner"
+  executor = "docker"
+
+  [runners.docker]
+    image = "docker:24.0"
+    privileged = true  # ✅ Active le mode privilégié
+    volumes = ["/cache", "/var/run/docker.sock:/var/run/docker.sock"]
+```
+puis exécuter : `gitlab-runner restart`
+
+GitLab lance un conteneur docker:dind pour faire tourner le démon Docker (Docker in Docker).
+
+```
+docker-build:
+  stage: docker
+  image: docker:24.0.5
+  tags:
+    - docker
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
+  script:
+    - docker info
+    - docker build -t mon-projet:latest -f docker/Dockerfile .
+    - docker images
+```
+
+
 
 
 
 https://docs.gitlab.com/runner/register/?tab=Docker
 This GitLab instance does not provide any instance runners yet. Administrators can register instance runners in the admin area.
-
-
 
 Intègre un workflow CI/CD dans .gitlab-ci.yml pour valider chaque MR
 
