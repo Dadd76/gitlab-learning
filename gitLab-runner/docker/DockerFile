@@ -1,0 +1,22 @@
+# Build stage
+#FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+#WORKDIR /app
+#COPY myConsoleApp/*.csproj ./myConsoleApp/
+#RUN dotnet restore myConsoleApp/myConsoleApp.csproj
+#COPY . .
+#RUN dotnet publish myConsoleApp/myConsoleApp.csproj -c Release -o out
+
+# Runtime stage
+#FROM mcr.microsoft.com/dotnet/runtime:7.0
+#WORKDIR /app
+#COPY --from=build /app/out .
+#ENTRYPOINT ["dotnet", "myConsoleApp.dll"]
+
+
+# docker/Dockerfile
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+WORKDIR /app
+COPY publish/ .
+
+ENTRYPOINT ["dotnet", "TonProjet.dll"]
+
