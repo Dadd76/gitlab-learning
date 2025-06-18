@@ -373,7 +373,7 @@ Tu verras les tags associés à chaque runner.
 
 ou dans `sudo nano /srv/gitlab-runner/config/config.toml`
 
-### Builder image docker avec le runner
+### Builder image docker avec le runner : 
 
 #### Configuration du runner 
 
@@ -394,7 +394,7 @@ puis exécuter : `gitlab-runner restart`
 
 GitLab lance un conteneur docker:dind pour faire tourner le démon Docker (Docker in Docker).
 
-#### Création du dockerFile:
+#### Création du dockerFile :
 
 créer un dossier docker contenant le DockerFile à la racine du repository : 
 
@@ -414,7 +414,7 @@ COPY publish/ .
 ENTRYPOINT ["dotnet", "TonProjet.dll"]
 ```
 
-#### Etape docker-build:
+#### Etape docker-build :
 
 ```
 docker-build:
