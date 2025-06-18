@@ -316,8 +316,15 @@ mcr.microsoft.com/dotnet/sdk:7.0
 
 ### Vérification du runner ( actif et bien enregistré )
 
-Va dans ton projet GitLab :
-Menu > CI/CD > Runners
+sur le runner afficher la description du runner 
+```
+# gitlab-runner list
+Runtime platform                                    arch=amd64 os=linux pid=108 revision=4d7093e1 version=18.0.2
+Listing configured runners                          ConfigFile=/etc/gitlab-runner/config.toml
+build dotNet                                        Executor=docker Token=glrtr-bESNLz_xhyigEEAibghwTW86MQpwOjIKdDozCw.01.121ujupl7 URL=http://host.docker.internal
+```
+
+Va dans ton projet GitLab : Menu > CI/CD > Runners
 
 Tu dois voir ton runner dans la liste.
 Il doit être marqué comme “active” et “online”.
@@ -332,19 +339,29 @@ mes tags : C#,build,sdk:7.0,test,publish,deploy
 
 à la racine du projet : .gitlab-ci.yml
 
+### Le runner a-t-il les bons tags ? : 
 
-✅ 2. Le runner a-t-il les bons tags ?
+Les tags dans GitLab CI/CD sont utilisés pour associer un job à un ou plusieurs runners spécifiques. Ils permettent de contrôler où et comment un job doit s'exécuter.
 
-dans le runner affiche la description du runner pas les tags
+Pourquoi utiliser des tags ?
+ * Pour filtrer les runners capables d’exécuter un job donné.
+ * Pour organiser les types de jobs (ex. : build, test, docker, publish).
+ * Pour assurer que le bon environnement (langage, outils, permissions) est utilisé.
+
+Déclaration des tags dans un job dans le fichier .gitlab-ci.yml
+
 ```
-# gitlab-runner list
-Runtime platform                                    arch=amd64 os=linux pid=108 revision=4d7093e1 version=18.0.2
-Listing configured runners                          ConfigFile=/etc/gitlab-runner/config.toml
-build dotNet                                        Executor=docker Token=glrtr-bESNLz_xhyigEEAibghwTW86MQpwOjIKdDozCw.01.121ujupl7 URL=http://host.docker.internal
+build:
+  stage: build
+  tags:
+    - build
+    - sdk:7.0
+  script:
+    - dotnet build
 ```
-Dans ton .gitlab-ci.yml, tu n’as mis aucun tags: dans les jobs, ce qui est OK si ton runner est sans tags.
+Sinon GitLab ne trouve aucun runner correspondant.
 
-Tu peux les vérifier dans l’interface GitLab :
+Tu peux les vérifier dans l’interface GitLab les tags du runners et en ajouter :
 
 Va dans ton projet GitLab.
 
@@ -356,18 +373,6 @@ Tu verras les tags associés à chaque runner.
 
 ou dans `sudo nano /srv/gitlab-runner/config/config.toml`
 
-Mais si tu as ajouté des tags comme "dotnet" ou "docker" lors de l'enregistrement, tu dois les ajouter à tes jobs, par exemple :
-
-```
-build-job:
-  stage: build
-  tags:
-    - build
-    - dotnet
-  script:
-    - dotnet build --configuration Release --no-restore
-Sinon GitLab ne trouve aucun runner correspondant.
-```
 ### Builder image docker avec le runner
 
 #### Configuration du runner 
