@@ -223,10 +223,6 @@ Utilise un template de MR (.gitlab/merge_request_templates) pour structurer les 
 
 Active les règles de CODEOWNERS pour désigner automatiquement les relecteurs
 
-# Créer un pipeline GitLab CI/CD pour une application C# console
-
-à la racine du projet : .gitlab-ci.yml
-
 ## Création gitlab-runner
 
 `docker run -d --name gitlab-runner --restart always -v /srv/gitlab-runner/config:/etc/gitlab-runner -v /var/run/docker.sock:/var/run/docker.sock gitlab/gitlab-runner:latest`
@@ -332,6 +328,11 @@ Vérifie aussi qu’il est bien assigné à ton projet (pas juste "shared").
 mes tags : C#,build,sdk:7.0,test,publish,deploy
 
 /etc/gitlab-runner/config.toml
+
+## Intègre un workflow CI/CD dans .gitlab-ci.yml
+
+à la racine du projet : .gitlab-ci.yml
+
 
 ✅ 2. Le runner a-t-il les bons tags ?
 
