@@ -2,12 +2,12 @@
 
 Exercices pratiques et notes personnelles pour apprendre à utiliser GitLab avec Docker sur Windows.
 
-## documentation 
+## Documentation 
 
 https://www.youtube.com/playlist?list=PLn6POgpklwWrRoZZXv0xf71mvT4E0QDOF
 https://about.gitlab.com/fr-fr/
 
-## installation sous docker 
+## Installation sous docker 
 
 https://docs.gitlab.com/install/docker/installation/
 
