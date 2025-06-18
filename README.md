@@ -371,8 +371,10 @@ Sinon GitLab ne trouve aucun runner correspondant.
 ```
 ### Builder image docker avec le runner
 
-1. Dans le fichier config.toml du runner
-Sur ta machine (ou dans ton conteneur GitLab Runner), édite /etc/gitlab-runner/config.toml :  privileged = true
+#### Configuration du runner 
+
+Dans le fichier config.toml du runner :
+Sur ta machine (ou dans ton conteneur GitLab Runner), édite /etc/gitlab-runner/config.toml :  privileged = true pour  Docker-in-Docker (par exemple, tu veux builder et push une image dans le job GitLab),
 
 ```
 [[runners]]
@@ -388,23 +390,50 @@ puis exécuter : `gitlab-runner restart`
 
 GitLab lance un conteneur docker:dind pour faire tourner le démon Docker (Docker in Docker).
 
+#### création du dockerFile:
+
+créer un dossier docker contenant le DockerFile à la racine du repository : 
+
 ```
-docker-build:
-  stage: docker
-  image: docker:24.0.5
-  tags:
-    - docker
-  services:
-    - docker:dind
-  variables:
-    DOCKER_DRIVER: overlay2
-  script:
-    - docker info
-    - docker build -t mon-projet:latest -f docker/Dockerfile .
-    - docker images
+# Utilise l'image officielle ASP.NET Core 7.0 comme base (runtime uniquement, sans outils de build)
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+
+# Définit le répertoire de travail dans le conteneur comme étant /app
+WORKDIR /app
+
+# Copie le contenu du dossier "publish/" de ta machine locale dans le répertoire /app du conteneur
+# Ce dossier contient les fichiers générés par `dotnet publish`
+COPY publish/ .
+
+# Définit la commande qui sera exécutée quand le conteneur démarre : lance l'application .NET
+# Ici, TonProjet.dll est l'assembly généré par le projet
+ENTRYPOINT ["dotnet", "TonProjet.dll"]
 ```
 
-créer un dossier docker contenant le DockerFile à la racine du repository
+#### étape docker-build:
+
+```
+docker-build:
+  stage: docker                             # Étape de la pipeline nommée "docker"
+  image: docker:24.0.5                      # Utilise l’image Docker CLI version 24.0.5
+  tags:                   
+    - docker
+  services:
+    - name: docker:24.0.5-dind              # Lance le service Docker-in-Docker (dind) pour construire des images
+      alias: docker                         # Rend ce service accessible via l'alias "docker"
+  variables:
+    DOCKER_HOST: tcp://docker:2375          # Configure Docker CLI pour utiliser le démon Docker du service dind
+    DOCKER_TLS_CERTDIR: ""                  # Désactive TLS (certificats) pour simplifier la communication avec le démon
+    DOCKER_DRIVER: overlay2                 # Utilise le système de fichiers Docker recommandé (overlay2)
+  before_script: []                         # Vide before_script hérité globalement (évite d'exécuter dotnet restore ici)
+  script:
+    - docker info                           # Vérifie que Docker fonctionne (utile pour diagnostiquer les erreurs)
+    - docker build -t mon-projet:latest -f docker/Dockerfile .   # Construit l'image Docker à partir du Dockerfile
+    - docker images                         # Affiche les images Docker présentes pour vérification
+
+```
+
+
 
 
 
