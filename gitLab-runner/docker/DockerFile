@@ -12,11 +12,16 @@
 #COPY --from=build /app/out .
 #ENTRYPOINT ["dotnet", "myConsoleApp.dll"]
 
-
-# docker/Dockerfile
+# Utilise l'image officielle ASP.NET Core 7.0 comme base (runtime uniquement, sans outils de build)
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+
+# Définit le répertoire de travail dans le conteneur comme étant /app
 WORKDIR /app
+
+# Copie le contenu du dossier "publish/" de ta machine locale dans le répertoire /app du conteneur
+# Ce dossier contient les fichiers générés par `dotnet publish`
 COPY publish/ .
 
+# Définit la commande qui sera exécutée quand le conteneur démarre : lance l'application .NET
+# Ici, TonProjet.dll est l'assembly généré par le projet
 ENTRYPOINT ["dotnet", "TonProjet.dll"]
-
