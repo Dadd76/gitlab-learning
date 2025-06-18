@@ -432,15 +432,7 @@ docker-build:
 
 ```
 
-
-
-
-
-
-
 https://docs.gitlab.com/runner/register/?tab=Docker
-This GitLab instance does not provide any instance runners yet. Administrators can register instance runners in the admin area.
 
-Intègre un workflow CI/CD dans .gitlab-ci.yml pour valider chaque MR
 
 
