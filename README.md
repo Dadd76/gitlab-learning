@@ -314,9 +314,8 @@ Enter the default Docker image (for example, ruby:2.7):
 mcr.microsoft.com/dotnet/sdk:7.0
 ```
 
-### Vérification du runner
+### Vérification du runner ( actif et bien enregistré )
 
- 1. Ton runner est-il bien enregistré et actif ?
 Va dans ton projet GitLab :
 Menu > CI/CD > Runners
 
@@ -390,7 +389,7 @@ puis exécuter : `gitlab-runner restart`
 
 GitLab lance un conteneur docker:dind pour faire tourner le démon Docker (Docker in Docker).
 
-#### création du dockerFile:
+#### Création du dockerFile:
 
 créer un dossier docker contenant le DockerFile à la racine du repository : 
 
@@ -410,7 +409,7 @@ COPY publish/ .
 ENTRYPOINT ["dotnet", "TonProjet.dll"]
 ```
 
-#### étape docker-build:
+#### Etape docker-build:
 
 ```
 docker-build:
