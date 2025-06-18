@@ -403,6 +403,8 @@ docker-build:
     - docker images
 ```
 
+créer un dossier docker contenant le DockerFile à la racine du repository
+
 
 
 
