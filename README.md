@@ -290,6 +290,8 @@ Le token d’enregistrement est différent du Personal Access Token (glpat...), 
 
 ### Enregistrement du runner
 
+https://docs.gitlab.com/runner/register/?tab=Docker
+
 ```
 docker exec -it gitlab-runner gitlab-runner register \
   --url "http://host.docker.internal" \
@@ -437,7 +439,51 @@ docker-build:
 
 ```
 
-https://docs.gitlab.com/runner/register/?tab=Docker
+#### utiliser le Container Registry dans GitLab CE : 
+
+dans le conteneur : /etc/gitlab/gitlab.rb
+
+Vérifie que le registry est activé, dans le fichier de config gitlab.rb (sur ton serveur GitLab CE), tu dois avoir :
+`registry_external_url 'http://host.docker.internal:5050'`
+
+Et activer le registre Docker :
+`registry['enable'] = true`
+
+Redémarre ensuite GitLab :
+`sudo gitlab-ctl reconfigure`
+
+ajouter dans le docker compose la redirection de port 5050
+
+Avec GitLab CE, l’URL du registry par défaut est généralement :
+registry.gitlab.example.com:5050/<groupe>/<projet>
+
+Tu dois tagger ton image Docker comme suit dans ton .gitlab-ci.yml :
+docker build -t registry.gitlab.example.com:5050/mon-groupe/mon-projet:latest .
+
+Et ensuite :
+docker push registry.gitlab.example.com:5050/mon-groupe/mon-projet:latest
+
+Authentification depuis GitLab CI/CD
+`docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY`
+
+```
+docker-build:
+  stage: docker
+  image: docker:24.0.5
+  services:
+    - name: docker:24.0.5-dind
+      alias: docker
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  before_script: []
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE:latest -f docker/Dockerfile .
+    - docker push $CI_REGISTRY_IMAGE:latest
+```
+
+
 
 
 
