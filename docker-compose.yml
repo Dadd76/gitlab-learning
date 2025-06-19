@@ -8,9 +8,10 @@ services:
       GITLAB_OMNIBUS_CONFIG: |
         external_url 'http://host.docker.internal'
     ports:
-      - '80:80'
-      - '443:443'
-      - '22:22'
+      - '80:80'     # Port HTTP : permet d’accéder à GitLab via navigateur en HTTP (web interface)
+      - '443:443'   # Port HTTPS : permet d’accéder à GitLab via navigateur en HTTPS (sécurisé)
+      - '22:22'     # Port SSH : utilisé pour les connexions Git via SSH (push/pull via SSH)
+      - '5050:5050' # Port Registry Docker : expose le registry Docker intégré à GitLab pour les images Docker
     volumes:
       - gitlab_config:/etc/gitlab
       - gitlab_logs:/var/log/gitlab

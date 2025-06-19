@@ -39,6 +39,7 @@ stages:
   - test-artifact
   - publish
   - docker
+  - docker-push
   - deploy
   
 # ### Define global cache rule
@@ -167,22 +168,76 @@ publish:
     expire_in: 1 hour
 
 docker-build:
-  stage: docker                             # Étape de la pipeline nommée "docker"
-  image: docker:24.0.5   
-  tags:                   # Utilise l’image Docker CLI version 24.0.5
+  stage: docker                                                        # Étape "docker" dans la CI/CD
+  image: docker:24.0.5                                                 # Utilise l’image Docker CLI version 24.0.5
+  tags:
+    - docker                                                           # Tag du runner à utiliser
+  services:
+    - name: docker:24.0.5-dind                                         # Service Docker-in-Docker (dind)
+      alias: docker                                                    # Alias "docker" pour DOCKER_HOST
+  variables:
+    DOCKER_HOST: tcp://docker:2375                                     # Pointe vers le démon dind
+    DOCKER_TLS_CERTDIR: ""                                             # Désactive TLS pour simplifier la connexion
+    DOCKER_DRIVER: overlay2                                            # Driver de stockage Docker
+  before_script: []                                                    # Désactive le before_script global
+  script: |
+    docker info                                                       # Vérifie que Docker fonctionne
+
+    # Construction de l’image Docker avec plusieurs tags :
+    # - latest : la version la plus récente
+    # - SHA court : trace précise du commit
+    # - Nom de la branche : permet de distinguer dev/main/etc.
+    docker build \
+      -t $CI_REGISTRY_IMAGE:latest \
+      -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA \
+      -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME \
+      -f docker/Dockerfile .
+
+    docker images                                                     # Affiche les images présentes
+
+    # Sauvegarde l’image et tous ses tags dans une archive pour le job suivant
+    docker save \
+      $CI_REGISTRY_IMAGE:latest \
+      $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA \
+      $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME \
+      -o docker-image.tar
+
+  artifacts:
+    paths:
+      - docker-image.tar                                               # Transmet l’archive au job docker-push
+    expire_in: 1 hour                                                  # Durée de vie de l’artifact
+
+docker-push:
+  stage: docker-push                                                   # Étape "docker-push" dans la CI/CD
+  image: docker:24.0.5
+  tags:
     - docker
   services:
-    - name: docker:24.0.5-dind              # Lance le service Docker-in-Docker (dind) pour construire des images
-      alias: docker                         # Rend ce service accessible via l'alias "docker"
+    - name: docker:24.0.5-dind
+      alias: docker
+      command: ["--insecure-registry=host.docker.internal:5050"]       # Permet le push vers un registre HTTP (non HTTPS)
   variables:
-    DOCKER_HOST: tcp://docker:2375          # Configure Docker CLI pour utiliser le démon Docker du service dind
-    DOCKER_TLS_CERTDIR: ""                  # Désactive TLS (certificats) pour simplifier la communication avec le démon
-    DOCKER_DRIVER: overlay2                 # Utilise le système de fichiers Docker recommandé (overlay2)
-  before_script: []                         # Vide before_script hérité globalement (évite d'exécuter dotnet restore ici)
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  before_script: []
+  dependencies:
+    - docker-build                                                     # Indique que ce job dépend du job précédent (accès à l'artifact)
   script:
-    - docker info                           # Vérifie que Docker fonctionne (utile pour diagnostiquer les erreurs)
-    - docker build -t mon-projet:latest -f docker/Dockerfile .   # Construit l'image Docker à partir du Dockerfile
-    - docker images                         # Affiche les images Docker présentes pour vérification
+    - docker load -i docker-image.tar                                  # Recharge l'image Docker depuis l’archive
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY    # Authentification au registre GitLab avec un token CI/CD
+
+    # Push des 3 tags générés dans le job précédent
+    - docker push $CI_REGISTRY_IMAGE:latest                            # Tag général (souvent utilisé pour déploiement auto)
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA              # Version précise liée à un commit (traceabilité forte)
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME               # Nom de la branche (utile pour suivre "main", "dev", etc.)
+
+
+
+
+
+
+
+
 
 deploy:
   stage: deploy
