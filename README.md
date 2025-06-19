@@ -436,9 +436,12 @@ docker-build:
     - docker info                           # Vérifie que Docker fonctionne (utile pour diagnostiquer les erreurs)
     - docker build -t mon-projet:latest -f docker/Dockerfile .   # Construit l'image Docker à partir du Dockerfile
     - docker images                         # Affiche les images Docker présentes pour vérification
+  artifacts:
+    paths:
+      - docker-image.tar
+    expire_in: 1 hour   
 
 ```
-
 #### utiliser le Container Registry dans GitLab CE : 
 
 dans le conteneur : /etc/gitlab/gitlab.rb
@@ -454,8 +457,7 @@ Redémarre ensuite GitLab :
 
 ajouter dans le docker compose la redirection de port 5050
 
-Avec GitLab CE, l’URL du registry par défaut est généralement :
-registry.gitlab.example.com:5050/<groupe>/<projet>
+tester l adresse : http://host.docker.internal:5050/v2/
 
 Tu dois tagger ton image Docker comme suit dans ton .gitlab-ci.yml :
 docker build -t registry.gitlab.example.com:5050/mon-groupe/mon-projet:latest .
@@ -466,22 +468,34 @@ docker push registry.gitlab.example.com:5050/mon-groupe/mon-projet:latest
 Authentification depuis GitLab CI/CD
 `docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY`
 
+gitlab-ci-token est un nom d’utilisateur spécial réservé par GitLab
+
+$CI_JOB_TOKEN est un jeton temporaire généré par GitLab pour ce job spécifique
+
+#### Etape docker-push :
+
 ```
-docker-build:
-  stage: docker
+docker-push:
+  stage: deploy
   image: docker:24.0.5
+  tags:                                                         
+    - docker
   services:
     - name: docker:24.0.5-dind
       alias: docker
   variables:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
-  before_script: []
+  dependencies:
+    - docker-build
   script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE:latest -f docker/Dockerfile .
+    - docker load -i docker-image.tar                                           # Recharger l’image depuis l’archive
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY             # gitlab-ci-token est un nom d’utilisateur spécial réservé par GitLab
+                                                                                # $CI_JOB_TOKEN est un jeton temporaire généré par GitLab pour ce job spécifique
     - docker push $CI_REGISTRY_IMAGE:latest
 ```
+
+
 
 
 
